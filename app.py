@@ -119,63 +119,74 @@ st.subheader("📈 Data Visualizations")
 
 # 5.1 Sales by Month
 st.markdown("### 📆 Monthly Sales")
-fig1, ax1 = plt.subplots()
 monthly_sales = df.groupby("Month")["Sales"].sum()
-ax1.bar(monthly_sales.index, monthly_sales.values, color="teal")
-ax1.set_xlabel("Month")
-ax1.set_ylabel("Sales (USD)")
-ax1.set_title("Sales Per Month")
-ax1.set_xticks(monthly_sales.index)
-st.pyplot(fig1)
+if monthly_sales.empty:
+    st.warning("No data available for monthly sales.")
+else:
+    fig1, ax1 = plt.subplots()
+    ax1.bar(monthly_sales.index.astype(str), monthly_sales.values, color="teal")
+    ax1.set_xlabel("Month")
+    ax1.set_ylabel("Sales (USD)")
+    ax1.set_title("Sales Per Month")
+    st.pyplot(fig1)
 
 # 5.2 Sales by City
 st.markdown("### 🏙️ Sales by City")
-fig2, ax2 = plt.subplots()
 city_sales = df.groupby("City")["Sales"].sum()
-ax2.bar(city_sales.index, city_sales.values, color="orange")
-ax2.set_xticklabels(city_sales.index, rotation=45, ha='right')
-ax2.set_title("Sales by City")
-ax2.set_ylabel("Sales (USD)")
-st.pyplot(fig2)
+if city_sales.empty:
+    st.warning("No data available for city sales.")
+else:
+    fig2, ax2 = plt.subplots()
+    ax2.bar(city_sales.index, city_sales.values, color="orange")
+    ax2.set_title("Sales by City")
+    ax2.set_ylabel("Sales (USD)")
+    ax2.set_xticks(range(len(city_sales.index)))
+    ax2.set_xticklabels(city_sales.index, rotation=45, ha='right')
+    st.pyplot(fig2)
 
 # 5.3 Orders by Hour
 st.markdown("### ⏰ Orders by Hour")
-fig3, ax3 = plt.subplots()
 hourly_orders = df.groupby("Hour")["Count"].count()
-ax3.plot(hourly_orders.index, hourly_orders.values, marker="o")
-ax3.set_title("Orders by Hour")
-ax3.set_xlabel("Hour of Day")
-ax3.set_ylabel("Number of Orders")
-ax3.grid(True)
-st.pyplot(fig3)
+if hourly_orders.empty:
+    st.warning("No data available for hourly orders.")
+else:
+    fig3, ax3 = plt.subplots()
+    ax3.plot(hourly_orders.index, hourly_orders.values, marker="o")
+    ax3.set_title("Orders by Hour")
+    ax3.set_xlabel("Hour of Day")
+    ax3.set_ylabel("Number of Orders")
+    ax3.grid(True)
+    st.pyplot(fig3)
 
 # 5.4 Top Products by Quantity
 st.markdown("### 📦 Units Sold by Product")
-product_quantity = df.groupby("Product")["Quantity Ordered"].sum()
-sorted_products = product_quantity.sort_values(ascending=False)
-fig4, ax4 = plt.subplots(figsize=(10,5))
-ax4.bar(sorted_products.index, sorted_products.values, color='purple')
-ax4.set_xticklabels(sorted_products.index, rotation='vertical', size=9)
-ax4.set_ylabel("Quantity Sold")
-ax4.set_title("Top Selling Products")
-st.pyplot(fig4)
+product_quantity = df.groupby("Product")["Quantity Ordered"].sum().sort_values(ascending=False)
+if product_quantity.empty:
+    st.warning("No data available for product sales.")
+else:
+    fig4, ax4 = plt.subplots(figsize=(10,5))
+    ax4.bar(product_quantity.index, product_quantity.values, color='purple')
+    ax4.set_xticks(range(len(product_quantity.index)))
+    ax4.set_xticklabels(product_quantity.index, rotation='vertical', size=9)
+    ax4.set_ylabel("Quantity Sold")
+    ax4.set_title("Top Selling Products")
+    st.pyplot(fig4)
 
 # 5.5 Price vs Quantity
 st.markdown("### 💰 Price vs Quantity Sold")
 product_group = df.groupby("Product")
 quantity = product_group["Quantity Ordered"].sum()
 prices = product_group["Price Each"].mean()
-
-fig5, ax5 = plt.subplots(figsize=(10,5))
-ax6 = ax5.twinx()
-ax5.bar(quantity.index, quantity.values, color='green', label='Quantity Sold')
-ax6.plot(prices.index, prices.values, color='blue', marker='o', label='Average Price')
-
-ax5.set_xticklabels(quantity.index, rotation='vertical', size=9)
-ax5.set_ylabel("Quantity Sold", color='green')
-ax6.set_ylabel("Avg. Price (USD)", color='blue')
-ax5.set_title("Price vs Quantity Sold")
-st.pyplot(fig5)
-
-st.markdown("---")
-st.caption("Built with ❤️ using Streamlit | Demo Sales Dashboard for Electronics")
+if quantity.empty or prices.empty:
+    st.warning("No data available for price vs quantity charts.")
+else:
+    fig5, ax5 = plt.subplots(figsize=(10,5))
+    ax6 = ax5.twinx()
+    ax5.bar(quantity.index, quantity.values, color='green', label='Quantity Sold')
+    ax6.plot(prices.index, prices.values, color='blue', marker='o', label='Average Price')
+    ax5.set_xticks(range(len(quantity.index)))
+    ax5.set_xticklabels(quantity.index, rotation='vertical', size=9)
+    ax5.set_ylabel("Quantity Sold", color='green')
+    ax6.set_ylabel("Avg. Price (USD)", color='blue')
+    ax5.set_title("Price vs Quantity Sold")
+    st.pyplot(fig5)
