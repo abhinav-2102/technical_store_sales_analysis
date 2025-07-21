@@ -87,8 +87,9 @@ st.dataframe(combined_df.head())
 st.subheader("🧹 Data Cleaning")
 df = combined_df.copy()
 
-df.dropna(how="all", inplace=True)
-df = df[df["Order Date"].str[0:2] != 'Or']
+df.dropna(subset=["Order Date"], inplace=True)
+df = df[df["Order Date"].astype(str).str[0:2] != 'Or']
+
 
 df["Quantity Ordered"] = pd.to_numeric(df["Quantity Ordered"], errors="coerce")
 df["Price Each"] = pd.to_numeric(df["Price Each"], errors="coerce")
