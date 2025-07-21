@@ -6,37 +6,31 @@ from io import StringIO
 st.set_page_config(page_title="Sales Data Dashboard", layout="wide")
 st.title("📊 Electronic Sales Analysis Dashboard")
 
-# -----------------------------
-# 1. Sample CSV Data Strings
-# -----------------------------
+# -- 1. Demo Sample CSV Data --
 sample_csv_1 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
 04/19/19 08:46,iPhone,2,700,917 1st St, Dallas, TX 75001
 04/07/19 22:30,Lightning Charging Cable,1,14.95,682 Chestnut St, Boston, MA 02215
 04/12/19 14:38,Macbook Pro Laptop,1,1700,669 Spruce St, Los Angeles, CA 90001
 """
-
 sample_csv_2 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
 05/01/19 09:15,Google Phone,1,600,333 8th St, New York, NY 10001
 05/03/19 11:20,Wired Headphones,2,11.99,222 Walnut St, San Francisco, CA 94016
 05/03/19 17:45,AA Batteries (4-pack),3,3.84,111 Pine St, Austin, TX 73301
 """
-
 sample_csv_3 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
 06/15/19 13:55,Macbook Pro Laptop,2,1700,894 Birch St, Miami, FL 33101
 06/16/19 10:32,27in 4K Gaming Monitor,1,399.99,1010 Cedar St, Seattle, WA 98101
 06/17/19 18:47,USB-C Charging Cable,4,11.95,354 Elm St, Denver, CO 80201
 """
-
 sample_csv_4 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
 07/21/19 19:07,ThinkPad Laptop,1,1200,5057 Oak St, San Diego, CA 92101
 07/22/19 16:20,Bose SoundSport Headphones,1,99.99,211 Prairie St, Dallas, TX 75001
 07/23/19 08:49,Apple AirPods,2,150,299 Market St, Boston, MA 02215
 """
-
 sample_csv_5 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
 08/01/19 09:30,Google Home Mini,3,40,4244 West St, Las Vegas, NV 88901
@@ -52,22 +46,21 @@ SAMPLE_FILES = {
     "Electronics Q5": sample_csv_5
 }
 
-# -----------------------------
-# 2. Sidebar: Upload or Sample
-# -----------------------------
+# -- 2. Sidebar for Upload or Sample Data --
 st.sidebar.header("1. Upload CSV Files or Select a Sample")
-
-uploaded_files = st.sidebar.file_uploader("Upload your CSV files", type="csv", accept_multiple_files=True)
+uploaded_files = st.sidebar.file_uploader(
+    "Upload your CSV files", type="csv", accept_multiple_files=True
+)
 
 use_sample = False
 if not uploaded_files:
-    sample_choice = st.sidebar.selectbox("📁 Or select sample data to try:", ["(None)"] + list(SAMPLE_FILES.keys()))
+    sample_choice = st.sidebar.selectbox(
+        "📁 Or select sample data to try:", ["(None)"] + list(SAMPLE_FILES.keys())
+    )
     if sample_choice != "(None)":
         use_sample = True
 
-# -----------------------------
-# 3. Read and Combine Data
-# -----------------------------
+# -- 3. Read and Combine Data --
 if uploaded_files:
     combined_df = pd.concat([pd.read_csv(file) for file in uploaded_files], ignore_index=True)
     st.success("✅ Uploaded files loaded successfully.")
@@ -81,22 +74,21 @@ else:
 st.subheader("🔍 Raw Sales Data Preview")
 st.dataframe(combined_df.head())
 
-# -----------------------------
-# 4. Data Cleaning
-# -----------------------------
+# -- 4. Robust Data Cleaning --
 st.subheader("🧹 Data Cleaning")
 df = combined_df.copy()
 
+# Defensive cleaning for 'Order Date'
+df = df[df['Order Date'].notna()]
+df['Order Date'] = df['Order Date'].astype(str)
+df = df[~df['Order Date'].str.startswith('Or')]
+df['Order Date'] = pd.to_datetime(df['Order Date'], errors="coerce")
 df.dropna(subset=["Order Date"], inplace=True)
-df = df[df["Order Date"].astype(str).str[0:2] != 'Or']
 
-
+# Convert numeric columns
 df["Quantity Ordered"] = pd.to_numeric(df["Quantity Ordered"], errors="coerce")
 df["Price Each"] = pd.to_numeric(df["Price Each"], errors="coerce")
 df.dropna(subset=["Quantity Ordered", "Price Each"], inplace=True)
-
-df["Order Date"] = pd.to_datetime(df["Order Date"], errors="coerce")
-df.dropna(subset=["Order Date"], inplace=True)
 
 df["Month"] = df["Order Date"].dt.month
 df["Hour"] = df["Order Date"].dt.hour
@@ -104,52 +96,64 @@ df["Minute"] = df["Order Date"].dt.minute
 df["Count"] = 1
 df["Sales"] = df["Quantity Ordered"] * df["Price Each"]
 
-# Extract city and state
-def get_city(address): return address.split(",")[1].strip()
-def get_state(address): return address.split(",")[2].split(" ")[1]
+def get_city(address):
+    try:
+        return address.split(",")[1].strip()
+    except Exception:
+        return ""
+def get_state(address):
+    try:
+        return address.split(",")[2].split(" ")[1]
+    except Exception:
+        return ""
 
-df["City"] = df["Purchase Address"].apply(lambda x: f"{get_city(x)} ({get_state(x)})")
-st.write("✅ Cleaned Data Preview:")
+if "Purchase Address" in df.columns:
+    df["City"] = df["Purchase Address"].apply(lambda x: f"{get_city(x)} ({get_state(x)})")
+else:
+    df["City"] = ""
+
+st.write(f"✅ Cleaned Data Preview: {len(df)} rows remain.")
 st.dataframe(df.head())
 
-# -----------------------------
-# 5. Visualizations
-# -----------------------------
+if df.empty:
+    st.warning("No data remains after cleaning. Please check your dataset or sample selection.")
+    st.stop()
+
+# -- 5. Visualizations with Safeguards --
+
 st.subheader("📈 Data Visualizations")
 
 # 5.1 Sales by Month
 st.markdown("### 📆 Monthly Sales")
 monthly_sales = df.groupby("Month")["Sales"].sum()
-if monthly_sales.empty:
-    st.warning("No data available for monthly sales.")
-else:
+if not monthly_sales.empty:
     fig1, ax1 = plt.subplots()
     ax1.bar(monthly_sales.index.astype(str), monthly_sales.values, color="teal")
     ax1.set_xlabel("Month")
     ax1.set_ylabel("Sales (USD)")
     ax1.set_title("Sales Per Month")
     st.pyplot(fig1)
+else:
+    st.warning("No data available for monthly sales.")
 
 # 5.2 Sales by City
 st.markdown("### 🏙️ Sales by City")
 city_sales = df.groupby("City")["Sales"].sum()
-if city_sales.empty:
-    st.warning("No data available for city sales.")
-else:
+if not city_sales.empty:
     fig2, ax2 = plt.subplots()
     ax2.bar(city_sales.index, city_sales.values, color="orange")
-    ax2.set_title("Sales by City")
-    ax2.set_ylabel("Sales (USD)")
     ax2.set_xticks(range(len(city_sales.index)))
     ax2.set_xticklabels(city_sales.index, rotation=45, ha='right')
+    ax2.set_title("Sales by City")
+    ax2.set_ylabel("Sales (USD)")
     st.pyplot(fig2)
+else:
+    st.warning("No data available for city sales.")
 
 # 5.3 Orders by Hour
 st.markdown("### ⏰ Orders by Hour")
 hourly_orders = df.groupby("Hour")["Count"].count()
-if hourly_orders.empty:
-    st.warning("No data available for hourly orders.")
-else:
+if not hourly_orders.empty:
     fig3, ax3 = plt.subplots()
     ax3.plot(hourly_orders.index, hourly_orders.values, marker="o")
     ax3.set_title("Orders by Hour")
@@ -157,13 +161,13 @@ else:
     ax3.set_ylabel("Number of Orders")
     ax3.grid(True)
     st.pyplot(fig3)
+else:
+    st.warning("No data available for hourly orders.")
 
 # 5.4 Top Products by Quantity
 st.markdown("### 📦 Units Sold by Product")
 product_quantity = df.groupby("Product")["Quantity Ordered"].sum().sort_values(ascending=False)
-if product_quantity.empty:
-    st.warning("No data available for product sales.")
-else:
+if not product_quantity.empty:
     fig4, ax4 = plt.subplots(figsize=(10,5))
     ax4.bar(product_quantity.index, product_quantity.values, color='purple')
     ax4.set_xticks(range(len(product_quantity.index)))
@@ -171,15 +175,15 @@ else:
     ax4.set_ylabel("Quantity Sold")
     ax4.set_title("Top Selling Products")
     st.pyplot(fig4)
+else:
+    st.warning("No data available for product sales.")
 
 # 5.5 Price vs Quantity
 st.markdown("### 💰 Price vs Quantity Sold")
 product_group = df.groupby("Product")
 quantity = product_group["Quantity Ordered"].sum()
 prices = product_group["Price Each"].mean()
-if quantity.empty or prices.empty:
-    st.warning("No data available for price vs quantity charts.")
-else:
+if not quantity.empty and not prices.empty:
     fig5, ax5 = plt.subplots(figsize=(10,5))
     ax6 = ax5.twinx()
     ax5.bar(quantity.index, quantity.values, color='green', label='Quantity Sold')
@@ -190,3 +194,8 @@ else:
     ax6.set_ylabel("Avg. Price (USD)", color='blue')
     ax5.set_title("Price vs Quantity Sold")
     st.pyplot(fig5)
+else:
+    st.warning("No data available for price vs quantity charts.")
+
+st.markdown("---")
+st.caption("Built with ❤️ using Streamlit | Demo Sales Dashboard for Electronics")
