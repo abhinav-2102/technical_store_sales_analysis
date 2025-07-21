@@ -9,33 +9,33 @@ st.title("📊 Electronic Sales Analysis Dashboard")
 # -- 1. Demo Sample CSV Data --
 sample_csv_1 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-04/19/19 08:46,iPhone,2,700,917 1st St, Dallas, TX 75001
-04/07/19 22:30,Lightning Charging Cable,1,14.95,682 Chestnut St, Boston, MA 02215
-04/12/19 14:38,Macbook Pro Laptop,1,1700,669 Spruce St, Los Angeles, CA 90001
+04/19/19 08:46,iPhone,2,700,"917 1st St, Dallas, TX 75001"
+04/07/19 22:30,Lightning Charging Cable,1,14.95,"682 Chestnut St, Boston, MA 02215"
+04/12/19 14:38,Macbook Pro Laptop,1,1700,"669 Spruce St, Los Angeles, CA 90001"
 """
 sample_csv_2 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-05/01/19 09:15,Google Phone,1,600,333 8th St, New York, NY 10001
-05/03/19 11:20,Wired Headphones,2,11.99,222 Walnut St, San Francisco, CA 94016
-05/03/19 17:45,AA Batteries (4-pack),3,3.84,111 Pine St, Austin, TX 73301
+05/01/19 09:15,Google Phone,1,600,"333 8th St, New York, NY 10001"
+05/03/19 11:20,Wired Headphones,2,11.99,"222 Walnut St, San Francisco, CA 94016"
+05/03/19 17:45,AA Batteries (4-pack),3,3.84,"111 Pine St, Austin, TX 73301"
 """
 sample_csv_3 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-06/15/19 13:55,Macbook Pro Laptop,2,1700,894 Birch St, Miami, FL 33101
-06/16/19 10:32,27in 4K Gaming Monitor,1,399.99,1010 Cedar St, Seattle, WA 98101
-06/17/19 18:47,USB-C Charging Cable,4,11.95,354 Elm St, Denver, CO 80201
+06/15/19 13:55,Macbook Pro Laptop,2,1700,"894 Birch St, Miami, FL 33101"
+06/16/19 10:32,27in 4K Gaming Monitor,1,399.99,"1010 Cedar St, Seattle, WA 98101"
+06/17/19 18:47,USB-C Charging Cable,4,11.95,"354 Elm St, Denver, CO 80201"
 """
 sample_csv_4 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-07/21/19 19:07,ThinkPad Laptop,1,1200,5057 Oak St, San Diego, CA 92101
-07/22/19 16:20,Bose SoundSport Headphones,1,99.99,211 Prairie St, Dallas, TX 75001
-07/23/19 08:49,Apple AirPods,2,150,299 Market St, Boston, MA 02215
+07/21/19 19:07,ThinkPad Laptop,1,1200,'5057 Oak St, San Diego, CA 92101"
+07/22/19 16:20,Bose SoundSport Headphones,1,99.99,"211 Prairie St, Dallas, TX 75001"
+07/23/19 08:49,Apple AirPods,2,150,"299 Market St, Boston, MA 02215"
 """
 sample_csv_5 = """
 Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-08/01/19 09:30,Google Home Mini,3,40,4244 West St, Las Vegas, NV 88901
-08/02/19 12:45,Wired Headphones,2,11.99,988 Bridge St, St. Louis, MO 63101
-08/02/19 21:12,iPhone,1,700,1441 East St, Chicago, IL 60601
+08/01/19 09:30,Google Home Mini,3,40,"4244 West St, Las Vegas, NV 88901"
+08/02/19 12:45,Wired Headphones,2,11.99,"988 Bridge St, St. Louis, MO 63101"
+08/02/19 21:12,iPhone,1,700,"1441 East St, Chicago, IL 60601"
 """
 
 SAMPLE_FILES = {
