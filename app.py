@@ -7,43 +7,67 @@ st.set_page_config(page_title="Sales Data Dashboard", layout="wide")
 st.title("📊 Electronic Sales Analysis Dashboard")
 
 # -- 1. Demo Sample CSV Data --
-sample_csv_1 = """
-Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-04/19/19 08:46,iPhone,2,700,"917 1st St, Dallas, TX 75001"
-04/07/19 22:30,Lightning Charging Cable,1,14.95,"682 Chestnut St, Boston, MA 02215"
-04/12/19 14:38,Macbook Pro Laptop,1,1700,"669 Spruce St, Los Angeles, CA 90001"
-"""
-sample_csv_2 = """
-Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-05/01/19 09:15,Google Phone,1,600,"333 8th St, New York, NY 10001"
-05/03/19 11:20,Wired Headphones,2,11.99,"222 Walnut St, San Francisco, CA 94016"
-05/03/19 17:45,AA Batteries (4-pack),3,3.84,"111 Pine St, Austin, TX 73301"
-"""
-sample_csv_3 = """
-Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-06/15/19 13:55,Macbook Pro Laptop,2,1700,"894 Birch St, Miami, FL 33101"
-06/16/19 10:32,27in 4K Gaming Monitor,1,399.99,"1010 Cedar St, Seattle, WA 98101"
-06/17/19 18:47,USB-C Charging Cable,4,11.95,"354 Elm St, Denver, CO 80201"
-"""
-sample_csv_4 = """
-Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-07/21/19 19:07,ThinkPad Laptop,1,1200,'5057 Oak St, San Diego, CA 92101"
-07/22/19 16:20,Bose SoundSport Headphones,1,99.99,"211 Prairie St, Dallas, TX 75001"
-07/23/19 08:49,Apple AirPods,2,150,"299 Market St, Boston, MA 02215"
-"""
-sample_csv_5 = """
-Order Date,Product,Quantity Ordered,Price Each,Purchase Address
-08/01/19 09:30,Google Home Mini,3,40,"4244 West St, Las Vegas, NV 88901"
-08/02/19 12:45,Wired Headphones,2,11.99,"988 Bridge St, St. Louis, MO 63101"
-08/02/19 21:12,iPhone,1,700,"1441 East St, Chicago, IL 60601"
+sample_csv_1 = """Order Date,Product,Quantity Ordered,Price Each,Purchase Address
+01/15/19 10:20,iPhone,1,700,"123 Main St, New York, NY 10001"
+01/22/19 21:25,Lightning Charging Cable,2,14.95,"456 Park Ave, New York, NY 10001"
+02/10/19 08:30,27in 4K Gaming Monitor,1,389.99,"789 1st St, Boston, MA 02215"
+02/14/19 13:15,Apple AirPods,1,150,"321 2nd St, Boston, MA 02215"
+03/05/19 16:45,AAA Batteries (4-pack),3,2.99,"654 3rd St, San Francisco, CA 94016"
+03/18/19 11:10,Google Phone,1,600,"987 4th St, Los Angeles, CA 90001"
+03/25/19 09:05,Wired Headphones,1,11.99,"159 5th St, Los Angeles, CA 90001"
+01/05/19 12:00,USB-C Charging Cable,1,11.95,"753 6th St, Austin, TX 73301"
+02/28/19 19:30,Macbook Pro Laptop,1,1700,"951 7th St, Portland, OR 97035"
+03/12/19 14:20,Bose SoundSport Headphones,1,99.99,"357 8th St, Dallas, TX 75001"
 """
 
+sample_csv_2 = """Order Date,Product,Quantity Ordered,Price Each,Purchase Address
+04/02/19 07:15,ThinkPad Laptop,1,999.99,"246 9th St, Seattle, WA 98101"
+04/15/19 18:40,AAA Batteries (4-pack),2,2.99,"135 10th St, Seattle, WA 98101"
+05/10/19 12:30,iPhone,1,700,"864 11th St, Atlanta, GA 30301"
+05/20/19 20:10,Lightning Charging Cable,1,14.95,"975 12th St, Atlanta, GA 30301"
+06/05/19 15:55,Flatscreen TV,1,300,"202 13th St, New York, NY 10001"
+06/18/19 09:45,Macbook Pro Laptop,1,1700,"303 14th St, New York, NY 10001"
+04/25/19 11:05,Vareebadd Phone,1,400,"404 15th St, Portland, OR 97035"
+05/05/19 16:20,USB-C Charging Cable,2,11.95,"505 16th St, San Francisco, CA 94016"
+06/30/19 23:15,Wired Headphones,1,11.99,"606 17th St, Los Angeles, CA 90001"
+04/11/19 14:00,AA Batteries (4-pack),4,3.84,"707 18th St, Dallas, TX 75001"
+"""
+
+sample_csv_3 = """Order Date,Product,Quantity Ordered,Price Each,Purchase Address
+07/04/19 13:20,20in Monitor,1,109.99,"808 19th St, Boston, MA 02215"
+07/15/19 08:50,Apple AirPods,1,150,"909 20th St, Boston, MA 02215"
+08/08/19 17:35,34in Ultrawide Monitor,1,379.99,"121 21st St, Austin, TX 73301"
+08/22/19 10:15,Google Phone,1,600,"232 22nd St, San Francisco, CA 94016"
+09/01/19 19:40,Lightning Charging Cable,3,14.95,"343 23rd St, San Francisco, CA 94016"
+09/10/19 14:25,iPhone,1,700,"454 24th St, Los Angeles, CA 90001"
+07/20/19 22:10,Wired Headphones,1,11.99,"565 25th St, Seattle, WA 98101"
+08/15/19 11:30,Bose SoundSport Headphones,1,99.99,"676 26th St, New York, NY 10001"
+09/25/19 16:05,LG Washing Machine,1,600.00,"787 27th St, Atlanta, GA 30301"
+09/30/19 09:00,AA Batteries (4-pack),2,3.84,"898 28th St, Portland, OR 97035"
+"""
+
+sample_csv_4 = """Order Date,Product,Quantity Ordered,Price Each,Purchase Address
+10/05/19 18:10,Google Phone,1,600,"101 Pine St, Dallas, TX 75001"
+10/12/19 12:45,USB-C Charging Cable,1,11.95,"202 Oak St, Dallas, TX 75001"
+11/02/19 08:20,Macbook Pro Laptop,1,1700,"303 Cedar St, Austin, TX 73301"
+11/25/19 20:30,ThinkPad Laptop,1,999.99,"404 Birch St, Boston, MA 02215"
+12/10/19 15:15,iPhone,1,700,"505 Walnut St, New York, NY 10001"
+12/15/19 10:50,Apple AirPods,3,150,"606 Maple St, New York, NY 10001"
+12/24/19 17:00,27in 4K Gaming Monitor,1,389.99,"707 Elm St, San Francisco, CA 94016"
+10/31/19 23:45,Lightning Charging Cable,1,14.95,"808 Spruce St, Seattle, WA 98101"
+11/15/19 14:10,Wired Headphones,2,11.99,"909 Ash St, Los Angeles, CA 90001"
+12/05/19 09:25,AA Batteries (4-pack),5,3.84,"111 Fir St, Atlanta, GA 30301"
+"""
+
+# Combine all previous samples into a "Full Year" dataset
+sample_csv_5 = sample_csv_1 + "\n" + "\n".join(sample_csv_2.split("\n")[1:]) + "\n" + "\n".join(sample_csv_3.split("\n")[1:]) + "\n" + "\n".join(sample_csv_4.split("\n")[1:])
+
 SAMPLE_FILES = {
-    "Electronics Q1": sample_csv_1,
-    "Electronics Q2": sample_csv_2,
-    "Electronics Q3": sample_csv_3,
-    "Electronics Q4": sample_csv_4,
-    "Electronics Q5": sample_csv_5
+    "Q1 Data (Jan-Mar)": sample_csv_1,
+    "Q2 Data (Apr-Jun)": sample_csv_2,
+    "Q3 Data (Jul-Sep)": sample_csv_3,
+    "Q4 Data (Oct-Dec)": sample_csv_4,
+    "Full Year Data (All)": sample_csv_5
 }
 
 # -- 2. Sidebar for Upload or Sample Data --
@@ -199,3 +223,4 @@ else:
 
 st.markdown("---")
 st.caption("Built with ❤️ using Streamlit | Demo Sales Dashboard for Electronics")
+
