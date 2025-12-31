@@ -6,7 +6,9 @@ from io import StringIO
 st.set_page_config(page_title="Sales Data Dashboard", layout="wide")
 st.title("📊 Electronic Sales Analysis Dashboard")
 
-# -- 1. Demo Sample CSV Data --
+# -- 1. IMPROVED Demo Sample CSV Data --
+# Added more rows, diverse months (Jan-Dec), and varied times for better charts.
+
 sample_csv_1 = """Order Date,Product,Quantity Ordered,Price Each,Purchase Address
 01/15/19 10:20,iPhone,1,700,"123 Main St, New York, NY 10001"
 01/22/19 21:25,Lightning Charging Cable,2,14.95,"456 Park Ave, New York, NY 10001"
@@ -152,10 +154,12 @@ st.markdown("### 📆 Monthly Sales")
 monthly_sales = df.groupby("Month")["Sales"].sum()
 if not monthly_sales.empty:
     fig1, ax1 = plt.subplots()
-    ax1.bar(monthly_sales.index.astype(str), monthly_sales.values, color="teal")
-    ax1.set_xlabel("Month")
+    # Ensure months are sorted 1-12 if possible, though grouping usually sorts indices
+    ax1.bar(monthly_sales.index, monthly_sales.values, color="teal")
+    ax1.set_xlabel("Month Number")
     ax1.set_ylabel("Sales (USD)")
     ax1.set_title("Sales Per Month")
+    ax1.set_xticks(range(1, 13)) # Ensure all months are labeled if data exists
     st.pyplot(fig1)
 else:
     st.warning("No data available for monthly sales.")
@@ -183,6 +187,7 @@ if not hourly_orders.empty:
     ax3.set_title("Orders by Hour")
     ax3.set_xlabel("Hour of Day")
     ax3.set_ylabel("Number of Orders")
+    ax3.set_xticks(range(0, 24)) # Show all 24 hours
     ax3.grid(True)
     st.pyplot(fig3)
 else:
@@ -210,8 +215,8 @@ prices = product_group["Price Each"].mean()
 if not quantity.empty and not prices.empty:
     fig5, ax5 = plt.subplots(figsize=(10,5))
     ax6 = ax5.twinx()
-    ax5.bar(quantity.index, quantity.values, color='green', label='Quantity Sold')
-    ax6.plot(prices.index, prices.values, color='blue', marker='o', label='Average Price')
+    ax5.bar(quantity.index, quantity.values, color='green', label='Quantity Sold', alpha=0.6)
+    ax6.plot(prices.index, prices.values, color='blue', marker='o', label='Average Price', linewidth=2)
     ax5.set_xticks(range(len(quantity.index)))
     ax5.set_xticklabels(quantity.index, rotation='vertical', size=9)
     ax5.set_ylabel("Quantity Sold", color='green')
@@ -223,4 +228,3 @@ else:
 
 st.markdown("---")
 st.caption("Built with ❤️ using Streamlit | Demo Sales Dashboard for Electronics")
-
